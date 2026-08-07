@@ -1,5 +1,4 @@
 import feedparser
-from googlenewsdecoder import gnd
 from supabase import create_client
 
 SUPABASE_URL = "https://jyoxxkngxxfmiskfxndp.supabase.co"
@@ -13,11 +12,9 @@ feed = feedparser.parse(rss_url)
 
 for entry in feed.entries[:15]:
     try:
-        decoded_url = gnd(entry.link)
-        clean_url = decoded_url.get("decoded_url", entry.link)
-        
         title = entry.title
         source = entry.source.title if hasattr(entry, 'source') else "Google News"
+        clean_url = entry.link
 
         supabase.table("news").upsert({
             "title": title,
