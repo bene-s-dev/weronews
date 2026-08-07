@@ -6,7 +6,6 @@ from urllib.parse import parse_qs, urlparse
 import feedparser
 from supabase import create_client, Client
 
-# Supabase Konfiguration (nutzt Umgebungsvariablen für GitHub Actions oder deine Direkt-Keys als Fallback)
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://jyoxxkngxxfmiskfxndp.supabase.co")
 SUPABASE_KEY = os.environ.get(
     "SUPABASE_SERVICE_KEY", 
@@ -15,7 +14,7 @@ SUPABASE_KEY = os.environ.get(
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Deine Google Alert RSS Feed-URL
+# Deine spezifische Google Alert RSS Feed-URL
 RSS_URL = "https://www.google.com/alerts/feeds/04501937703243340539/10721502900236254242"
 RSS_FEEDS = [RSS_URL]
 
@@ -27,7 +26,6 @@ def clean_google_link(raw_url: str) -> str:
     parsed = urlparse(raw_url)
     if "google.com" in parsed.netloc:
         query_params = parse_qs(parsed.query)
-        # Google Alert Weiterleitungen nutzen meist 'url' oder 'q' als Parameter
         if "url" in query_params and query_params["url"]:
             return query_params["url"][0]
         if "q" in query_params and query_params["q"]:
@@ -39,9 +37,7 @@ def clean_text(text: str) -> str:
     """Dekodiert HTML-Entities (&amp;, &quot;) und entfernt HTML-Tags (z.B. <b>Wero</b>)."""
     if not text:
         return ""
-    # Erst HTML-Entities auflösen (&amp; -> &)
     decoded = html.unescape(text)
-    # Alle HTML-Tags entfernen
     cleaned = re.sub(r'<[^>]+?>', '', decoded)
     return cleaned.strip()
 
@@ -51,7 +47,6 @@ def parse_pub_date(entry) -> str:
         return time.strftime('%Y-%m-%dT%H:%M:%SZ', entry.published_parsed)
     if hasattr(entry, 'updated_parsed') and entry.updated_parsed:
         return time.strftime('%Y-%m-%dT%H:%M:%SZ', entry.updated_parsed)
-    # Fallback auf ISO-Format für Jetzt
     return time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
 
 def fetch_and_sync_news():
@@ -62,14 +57,14 @@ def fetch_and_sync_news():
     for feed_url in RSS_FEEDS:
         try:
             feed = feedparser.parse(feed_url)
-            print(f"📡 Feed geladen ({len(feed.entries)} Einträge gefunden): {feed_url[:50]}...")
+            print(f"📡 Feed geladen ({len(feed.entries)} Einträge gefunden): {feed_url[:60]}...")
 
             for entry in feed.entries:
                 raw_link = getattr(entry, "link", "")
                 clean_link = clean_google_link(raw_link)
                 title = clean_text(getattr(entry, "title", ""))
 
-                # Wenn Link oder Titel fehlen oder der Link bereits verarbeitet wurde, überspringen
+                # Wenn Link oder Titel fehlen oder der Link doppelt ist, überspringen
                 if not clean_link or not title or clean_link in seen_links:
                     continue
 
@@ -82,9 +77,12 @@ def fetch_and_sync_news():
                 
                 source = clean_text(author or source_title)
                 if not source or source.lower() in ["google alert", "none"]:
-                    # Domain als Fallback-Quelle nutzen
                     domain = urlparse(clean_link).netloc.replace("www.", "")
                     source = domain if domain else "Google Alert"
+
+                # Vorschautext / Snippet auslesen
+                summary_raw = getattr(entry, "summary", getattr(entry, "description", ""))
+                summary = clean_text(summary_raw)
 
                 pub_date = parse_pub_date(entry)
 
@@ -92,6 +90,7 @@ def fetch_and_sync_news():
                     "title": title,
                     "link": clean_link,
                     "source": source,
+                    "summary": summary,
                     "pub_date": pub_date
                 })
 
@@ -101,12 +100,10 @@ def fetch_and_sync_news():
     if articles_to_upsert:
         print(f"📦 Sende {len(articles_to_upsert)} bereinigte Artikel an Supabase...")
         try:
-            # on_conflict="link" verhindert Duplikate basierend auf der eindeutigen URL
-            response = supabase.table("news").upsert(articles_to_upsert, on_conflict="link").execute()
-            print("✅ Erfolgreich synchronisiert!")
+            supabase.table("news").upsert(articles_to_upsert, on_conflict="link").execute()
+            print("✅ Erfolgreich mit Supabase synchronisiert!")
         except Exception as e:
-            print(f"⚠️ Batch-Upsert fehlgeschlagen: {e}. Versuche Einzel-Übertragung...")
-            # Fallback: Einzelne Artikel hochladen, falls ein bestimmter Eintrag fehlerhaft ist
+            print(f"⚠️ Batch-Upsert fehlgeschlagen ({e}). Versuche Einzel-Übertragung...")
             saved_count = 0
             for article in articles_to_upsert:
                 try:
