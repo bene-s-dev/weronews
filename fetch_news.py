@@ -1,5 +1,5 @@
 import feedparser
-from googlenewsdecode import gnd
+from googlenewsdecoder import gnd
 from supabase import create_client
 
 SUPABASE_URL = "https://jyoxxkngxxfmiskfxndp.supabase.co"
