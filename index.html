@@ -32,36 +32,56 @@
       --chip-bg: #334155;
     }
 
-    * { 
-      box-sizing: border-box; 
-      transition: background 0.2s, color 0.2s, opacity 0.2s, border-color 0.2s; 
+    * {
+      box-sizing: border-box;
+      transition: background 0.2s, color 0.2s, opacity 0.2s, border-color 0.2s;
       -webkit-tap-highlight-color: transparent;
     }
-    
-    button, a, input, .icon-btn, .action-btn, .chip, .fav-heart-btn, .search-toggle-btn { 
-      outline: none !important; 
-      -webkit-tap-highlight-color: transparent; 
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      min-height: 100vh;
     }
-    button:focus, button:focus-visible, .action-btn:focus, .action-btn:focus-visible { 
-      outline: none !important; 
-      box-shadow: none !important; 
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: none;
+      gap: 12px;
     }
 
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); max-width: 800px; margin: 0 auto; padding: 24px 16px; min-height: 100vh; }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
 
-    header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 20px; padding-bottom: 16px; gap: 12px; }
-    
-    .header-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; justify-self: start; }
-    .header-logo { height: 28px; width: auto; display: block; object-fit: contain; }
-    [data-theme="dark"] .header-logo { filter: brightness(0) invert(1); }
+    .header-logo {
+      height: 28px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
 
-    .header-title-wrapper { 
-      display: flex; 
-      align-items: center; 
-      gap: 8px; 
-      justify-self: center; 
-      text-align: center; 
-      transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+    [data-theme="dark"] .header-logo {
+      filter: brightness(0) invert(1);
+    }
+
+    .header-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
     }
 
     .header-title-wrapper h1 {
@@ -71,205 +91,135 @@
       letter-spacing: -0.02em;
     }
 
-    header:has(.search-expand-box.expanded) .header-title-wrapper,
-    .header-title-wrapper.search-active {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: scale(0.92);
+    .rss-icon {
+      display: inline-flex;
+      align-items: center;
+      color: #2563eb;
+      flex-shrink: 0;
     }
 
-    .rss-icon { display: inline-flex; align-items: center; color: #2563eb; flex-shrink: 0; }
-    [data-theme="dark"] .rss-icon { color: #60a5fa; }
-
-    .header-actions { display: flex; align-items: center; gap: 8px; justify-self: end; }
-
-    .icon-btn { background: transparent; border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-
-    /* Hover-Effekte nur für Geräte mit Maus-Pointer aktivieren, um "klebenden" Hover-Kreis auf Mobilgeräten zu vermeiden */
-    @media (hover: hover) {
-      .icon-btn:hover { background: var(--border); }
-      .chip:hover { background: var(--chip-bg); color: var(--text); }
-      .action-btn:hover { color: var(--text); background: var(--border); }
-      .refresh-btn:hover { color: var(--text); background: var(--border); }
-      .close-btn:hover { color: var(--text); background: var(--border); }
-      .stats-accordion-btn:hover { background: var(--border); }
+    [data-theme="dark"] .rss-icon {
+      color: #60a5fa;
     }
 
-    .search-expand-box {
+    .header-actions {
       display: flex;
       align-items: center;
-      height: 38px;
-      width: 38px;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: transparent;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      background: transparent;
-      overflow: hidden;
-      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, background-color 0.2s;
-      position: relative;
-    }
-
-    .search-expand-box.expanded {
-      width: 210px;
-      background: var(--card-bg);
-      border-color: #eab308;
-      box-shadow: 0 0 0 2px rgba(255, 244, 141, 0.4);
-    }
-    [data-theme="dark"] .search-expand-box.expanded {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(255, 244, 141, 0.25);
-    }
-
-    @media (max-width: 520px) {
-      .search-expand-box.expanded {
-        width: 140px;
-      }
-    }
-
-    .search-toggle-btn {
-      background: transparent;
-      border: none;
       color: var(--text);
-      min-width: 38px;
+      width: 38px;
       height: 38px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-    }
-    .search-expand-box.expanded .search-toggle-btn {
-      color: #ca8a04;
-    }
-    [data-theme="dark"] .search-expand-box.expanded .search-toggle-btn {
-      color: var(--accent);
-    }
-
-    .search-input-expand {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      font-size: 0.85rem;
       outline: none;
-      padding: 0 10px 0 0;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease 0.05s;
     }
 
-    .search-expand-box.expanded .search-input-expand {
-      opacity: 1;
-      pointer-events: auto;
+    @media (hover: hover) {
+      .icon-btn:hover { background: var(--border); }
     }
 
     .controls-wrapper {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 16px;
-      width: 100%;
     }
 
     .filter-chips {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       overflow-x: auto;
       padding-bottom: 4px;
       scrollbar-width: none;
       flex: 1;
       min-width: 0;
-      -webkit-overflow-scrolling: touch;
     }
 
-    .chip { 
-      padding: 6px 12px; 
-      border-radius: 20px; 
-      border: 1px solid var(--border); 
-      background: var(--card-bg); 
-      color: var(--text-muted); 
-      font-size: 0.78rem; 
-      font-weight: 500; 
-      cursor: pointer; 
-      white-space: nowrap; 
-      display: flex; 
-      align-items: center; 
-      gap: 5px; 
+    .chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
       transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background 0.2s, color 0.2s;
     }
-    .chip:hover { background: var(--chip-bg); color: var(--text); }
-    .chip.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
 
-    #filter-favorites {
-      transform: scale(1);
-      opacity: 1;
+    @media (hover: hover) {
+      .chip:hover { background: var(--chip-bg); color: var(--text); }
     }
+
+    .chip.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
     #filter-favorites.hidden-chip {
       display: none !important;
     }
 
-    .stats-right-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      flex-shrink: 0;
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      backdrop-filter: blur(4px);
+      transition: all 0.3s ease;
     }
-
-    .refresh-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; padding: 4px 6px; border-radius: 6px; }
-    .refresh-btn:hover { color: var(--text); background: var(--border); }
-    .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
-
-    .date-section-header {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin: 20px 0 10px 0;
-      padding-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .date-section-header:first-of-type {
-      margin-top: 4px;
-    }
-
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    .menu-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 40; opacity: 0; visibility: hidden; backdrop-filter: blur(4px); transition: all 0.3s ease; }
     .menu-overlay.open { opacity: 1; visibility: visible; }
 
-    .menu-drawer { 
-      position: fixed; 
-      top: 16px; 
-      right: 16px; 
-      width: calc(100% - 32px); 
-      max-width: 380px; 
-      max-height: 85vh; 
-      background: var(--card-bg); 
-      border: 1px solid var(--border); 
-      border-radius: 16px; 
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); 
-      z-index: 50; 
-      transform: translateY(-20px) scale(0.92) rotate(-1deg); 
-      opacity: 0; 
-      visibility: hidden; 
-      display: flex; 
-      flex-direction: column; 
-      overflow: hidden; 
+    .menu-drawer {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: calc(100% - 32px);
+      max-width: 380px;
+      max-height: 85vh;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      z-index: 50;
+      transform: translateY(-20px) scale(0.92);
+      opacity: 0;
+      visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease, visibility 0.25s;
     }
-    .menu-drawer.open { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; visibility: visible; }
+    .menu-drawer.open { transform: translateY(0) scale(1); opacity: 1; visibility: visible; }
 
     .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
     .menu-header h2 { font-size: 1.05rem; margin: 0; font-weight: 700; }
     .close-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; border-radius: 6px; }
-    .close-btn:hover { color: var(--text); background: var(--border); }
+    @media (hover: hover) {
+      .close-btn:hover { color: var(--text); background: var(--border); }
+    }
 
     .menu-body { padding: 16px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
-    
+
     .setting-row { display: flex; justify-content: space-between; align-items: center; }
     .setting-label { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
@@ -294,7 +244,14 @@
       align-items: center;
       cursor: pointer;
     }
-    .stats-accordion-btn:hover { background: var(--border); }
+    .stats-accordion-btn span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    @media (hover: hover) {
+      .stats-accordion-btn:hover { background: var(--border); }
+    }
     .stats-accordion-btn svg.chevron { transition: transform 0.3s ease; }
     .stats-accordion-btn.open svg.chevron { transform: rotate(180deg); }
 
@@ -322,19 +279,34 @@
     .fav-list { display: flex; flex-direction: column; gap: 8px; }
     .fav-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; gap: 10px; }
     .fav-item-title { font-size: 0.85rem; font-weight: 500; text-decoration: none; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-    .fav-item-title:hover { color: #d97706; }
-    [data-theme="dark"] .fav-item-title:hover { color: var(--accent); }
+    @media (hover: hover) {
+      .fav-item-title:hover { color: #d97706; }
+      [data-theme="dark"] .fav-item-title:hover { color: var(--accent); }
+    }
     .remove-fav-btn { background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 2px; display: flex; align-items: center; border-radius: 4px; opacity: 0.8; }
-    .remove-fav-btn:hover { opacity: 1; background: rgba(239, 68, 68, 0.1); }
+    @media (hover: hover) {
+      .remove-fav-btn:hover { opacity: 1; background: rgba(239, 68, 68, 0.1); }
+    }
 
-    .news-card { 
-      background: var(--card-bg); 
-      border: 1px solid var(--border); 
-      padding: 18px; 
-      border-radius: 12px; 
-      margin-bottom: 12px; 
-      box-shadow: var(--card-shadow); 
-      position: relative; 
+    .date-group-header {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin: 20px 0 10px 0;
+      padding-bottom: 0;
+      border-bottom: none;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .news-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: var(--card-shadow);
+      position: relative;
       animation: cardFadeIn 0.35s ease cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
@@ -345,24 +317,41 @@
 
     .news-card.compact-view { padding: 12px 16px; }
     .news-card.is-read { opacity: 0.68; background: var(--bg); }
-    .news-card.is-read:hover { opacity: 0.95; }
+    @media (hover: hover) {
+      .news-card.is-read:hover { opacity: 0.95; }
+    }
 
     .news-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
-    
+
     .news-title { font-size: 1.05rem; margin: 0; font-weight: 600; line-height: 1.4; flex: 1; }
     .news-title a { color: var(--text); text-decoration: none; }
-    .news-title a:hover { color: #d97706; }
-    [data-theme="dark"] .news-title a { color: #ffffff; }
-    [data-theme="dark"] .news-title a:hover { color: var(--accent); }
+    @media (hover: hover) {
+      .news-title a:hover { color: #d97706; }
+      [data-theme="dark"] .news-title a:hover { color: var(--accent); }
+    }
 
     .card-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-    .action-btn { background: transparent; border: none; cursor: pointer; padding: 6px; color: var(--text-muted); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
-    .action-btn:hover { color: var(--text); background: var(--border); }
-    
-    .fav-heart-btn:hover { color: #ef4444; }
+    .action-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      color: var(--text-muted);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+    }
+
+    @media (hover: hover) {
+      .action-btn:hover { color: var(--text); background: var(--border); }
+      .fav-heart-btn:hover { color: #ef4444; }
+    }
+
     .fav-heart-btn.active { color: #ef4444; }
     .fav-heart-btn.active svg { fill: #ef4444; stroke: #ef4444; }
-    
+
     .fav-heart-btn.pop-anim {
       animation: heartPopPlayful 0.5s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards;
     }
@@ -374,9 +363,17 @@
       80% { transform: scale(1.15) rotate(-5deg); }
       100% { transform: scale(1) rotate(0deg); }
     }
-    
-    .news-meta { display: flex; gap: 10px; font-size: 0.8rem; color: var(--text-muted); align-items: center; flex-wrap: wrap; margin-top: 6px; }
+
+    .news-meta { display: flex; gap: 8px; font-size: 0.8rem; color: var(--text-muted); align-items: center; flex-wrap: wrap; margin-top: 6px; }
     .badge { padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+    .time-badge {
+      background: var(--chip-bg);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
     .time-exact { font-size: 0.75rem; opacity: 0.85; }
     .read-indicator { font-size: 0.75rem; color: var(--text-muted); font-style: italic; display: inline-flex; align-items: center; gap: 3px; }
 
@@ -403,7 +400,26 @@
       100% { opacity: 0.5; }
     }
 
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0f172a; color: #ffffff; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 4px 14px rgba(0,0,0,0.25); z-index: 100; opacity: 0; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
     [data-theme="dark"] .toast { background: #ffffff; color: #0f172a; }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -434,16 +450,8 @@
         </svg>
       </span>
     </div>
-    
-    <div class="header-actions">
-      <!-- Expanding Search Button -->
-      <div class="search-expand-box" id="search-expand-box">
-        <button class="search-toggle-btn" onclick="toggleSearch()" id="search-toggle-btn" aria-label="Suche öffnen" title="Suchen">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </button>
-        <input type="text" id="search-input" class="search-input-expand" placeholder="Suchen..." oninput="handleSearch(this.value)">
-      </div>
 
+    <div class="header-actions">
       <!-- Hamburger Menu Button -->
       <button class="icon-btn" onclick="toggleMenu()" id="menu-btn" aria-label="Menü öffnen" title="Menü">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu">
@@ -511,8 +519,8 @@
       <!-- Reading Stats Accordion -->
       <div>
         <button class="stats-accordion-btn" id="stats-accordion-btn" onclick="toggleStatsAccordion()">
-          <span style="display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
             Lese-Statistik
           </span>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
@@ -556,45 +564,9 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let currentNewsData = [];
-    let searchQuery = '';
     let activeFilter = 'all';
     let isCompact = false;
     let toastTimeout;
-
-    // Search Toggle & Outside Click Collapse Logic
-    function toggleSearch() {
-      const box = document.getElementById('search-expand-box');
-      const input = document.getElementById('search-input');
-      const titleWrapper = document.querySelector('.header-title-wrapper');
-      const isExpanded = box.classList.contains('expanded');
-
-      if (isExpanded) {
-        if (!input.value.trim()) {
-          box.classList.remove('expanded');
-          if (titleWrapper) titleWrapper.classList.remove('search-active');
-        } else {
-          input.focus();
-        }
-      } else {
-        box.classList.add('expanded');
-        if (titleWrapper) titleWrapper.classList.add('search-active');
-        setTimeout(() => input.focus(), 120);
-      }
-    }
-
-    document.addEventListener('click', function(e) {
-      const box = document.getElementById('search-expand-box');
-      const input = document.getElementById('search-input');
-      const titleWrapper = document.querySelector('.header-title-wrapper');
-      if (box && !box.contains(e.target)) {
-        box.classList.remove('expanded');
-        if (titleWrapper) titleWrapper.classList.remove('search-active');
-        if (input.value) {
-          input.value = '';
-          handleSearch('');
-        }
-      }
-    });
 
     // Domain Extraction up to TLD
     function getDomain(url) {
@@ -682,7 +654,7 @@
       let favs = getFavorites();
       const index = favs.findIndex(fav => fav.link === item.link);
       let isNowFav = false;
-      
+
       if (index > -1) {
         favs.splice(index, 1);
         showToast("Aus Favoriten entfernt");
@@ -691,7 +663,7 @@
         showToast("Zu Favoriten hinzugefügt");
         isNowFav = true;
       }
-      
+
       saveFavorites(favs);
       updateFavoritesChipVisibility();
 
@@ -738,7 +710,7 @@
       if (diffInSeconds < 60) return { relative: 'Gerade eben', exact: exactTime };
       if (diffInSeconds < 3600) return { relative: `vor ${Math.floor(diffInSeconds / 60)} Min.`, exact: exactTime };
       if (diffInSeconds < 86400) return { relative: `vor ${Math.floor(diffInSeconds / 3600)} Std.`, exact: exactTime };
-      
+
       const yesterday = new Date(now);
       yesterday.setDate(now.getDate() - 1);
       if (date.toDateString() === yesterday.toDateString()) {
@@ -760,20 +732,14 @@
       if (navigator.share) {
         navigator.share(shareData).catch(() => {});
       } else {
-        const copyText = `${shareData.text}\n${url}`;
-        const dummy = document.createElement('textarea');
+        const dummy = document.createElement('input');
         document.body.appendChild(dummy);
-        dummy.value = copyText;
+        dummy.value = `${shareData.text}\n${url}`;
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
         showToast("Link in Zwischenablage kopiert!");
       }
-    }
-
-    function handleSearch(val) {
-      searchQuery = val.toLowerCase().trim();
-      renderNews();
     }
 
     function setFilter(filterType) {
@@ -782,25 +748,6 @@
       const activeBtn = document.getElementById(`filter-${filterType}`);
       if (activeBtn) activeBtn.classList.add('active');
       renderNews();
-    }
-
-    function getDateCategoryHeader(dateStr) {
-      if (!dateStr) return 'Ältere Nachrichten';
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) return 'Ältere Nachrichten';
-
-      const now = new Date();
-      if (date.toDateString() === now.toDateString()) {
-        return 'Heute';
-      }
-
-      const yesterday = new Date(now);
-      yesterday.setDate(now.getDate() - 1);
-      if (date.toDateString() === yesterday.toDateString()) {
-        return 'Gestern';
-      }
-
-      return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
     function renderNews() {
@@ -814,12 +761,6 @@
         const textContent = `${item.title || ''} ${item.description || ''} ${item.content || ''} ${item.summary || ''}`.toLowerCase();
         const hasKeyword = keywords.some(kw => textContent.includes(kw));
         if (!hasKeyword) return false;
-
-        const matchesSearch = !searchQuery || 
-          item.title.toLowerCase().includes(searchQuery) || 
-          getDomain(item.link).toLowerCase().includes(searchQuery);
-
-        if (!matchesSearch) return false;
 
         const pub = new Date(item.pub_date);
         const now = new Date();
@@ -847,25 +788,42 @@
       }
 
       container.innerHTML = '';
-      let lastHeader = null;
+      let lastGroupHeader = '';
 
       filtered.forEach(item => {
-        // Render date section header if date category changes
-        const currentHeader = getDateCategoryHeader(item.pub_date);
-        if (currentHeader !== lastHeader) {
-          const headerEl = document.createElement('h3');
-          headerEl.className = 'date-section-header';
-          headerEl.innerText = currentHeader;
-          container.appendChild(headerEl);
-          lastHeader = currentHeader;
-        }
-
         const domain = getDomain(item.link);
         const badgeStyle = getDomainPastelStyle(domain);
         const itemIsFav = isFavorite(item.link);
         const itemIsRead = isRead(item.link);
         const timeInfo = formatRelativeTime(item.pub_date);
 
+        // Grouping header logic
+        const pub = new Date(item.pub_date);
+        const now = new Date();
+        let groupHeader = '';
+        if (!isNaN(pub.getTime())) {
+          if (pub.toDateString() === now.toDateString()) {
+            groupHeader = 'Heute';
+          } else {
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            if (pub.toDateString() === yesterday.toDateString()) {
+              groupHeader = 'Gestern';
+            } else {
+              groupHeader = pub.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
+          }
+        }
+
+        if (groupHeader && groupHeader !== lastGroupHeader) {
+          lastGroupHeader = groupHeader;
+          const groupTitle = document.createElement('h3');
+          groupTitle.className = 'date-group-header';
+          groupTitle.innerText = groupHeader;
+          container.appendChild(groupTitle);
+        }
+
+        const safeTitle = (item.title || '').replace(/'/g, "\\'");
         const card = document.createElement('div');
         card.className = `news-card ${itemIsRead ? 'is-read' : ''} ${isCompact ? 'compact-view' : ''}`;
         card.innerHTML = `
@@ -874,7 +832,7 @@
               <a href="${item.link}" target="_blank" rel="noopener noreferrer" onclick="markAsRead('${item.link}')">${item.title}</a>
             </h2>
             <div class="card-actions">
-              <button class="action-btn" title="Teilen" onclick="shareArticle('${item.title.replace(/'/g, "\\'")}', '${item.link}'); this.blur();">
+              <button class="action-btn share-btn" title="Teilen" onclick="shareArticle('${safeTitle}', '${item.link}')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="10.68" y2="6.82"/><line x1="15.41" x2="8.59" y1="17.18" y2="13.32"/></svg>
               </button>
               <button class="action-btn fav-heart-btn ${itemIsFav ? 'active' : ''}" title="${itemIsFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}">
@@ -884,8 +842,8 @@
           </div>
           <div class="news-meta">
             <span class="badge" style="${badgeStyle}">${domain}</span>
-            <span>${timeInfo.relative}</span>
-            ${timeInfo.exact ? `<span class="time-exact">• ${timeInfo.exact}</span>` : ''}
+            <span class="time-badge">${timeInfo.relative}</span>
+            ${timeInfo.exact ? `<span class="time-exact">${timeInfo.exact}</span>` : ''}
             ${itemIsRead ? '<span class="read-indicator">✓ gelesen</span>' : ''}
           </div>
         `;
@@ -893,8 +851,15 @@
         card.querySelector('.fav-heart-btn').onclick = (e) => {
           e.preventDefault();
           toggleFavoriteItem(item, e.currentTarget);
-          e.currentTarget.blur();
+          if (e.currentTarget) e.currentTarget.blur();
         };
+
+        const shareBtn = card.querySelector('.share-btn');
+        if (shareBtn) {
+          shareBtn.addEventListener('click', (e) => {
+            e.currentTarget.blur();
+          });
+        }
 
         container.appendChild(card);
       });
@@ -916,7 +881,7 @@
         itemDiv.innerHTML = `
           <a href="${fav.link}" target="_blank" rel="noopener noreferrer" class="fav-item-title" title="${fav.title}">${fav.title}</a>
           <button class="remove-fav-btn" title="Entfernen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
           </button>
         `;
         itemDiv.querySelector('.remove-fav-btn').onclick = () => toggleFavoriteItem(fav);
@@ -951,14 +916,8 @@
       const detail = document.getElementById('reading-stats-detail');
       if (!currentNewsData || currentNewsData.length === 0) return;
 
-      const keywords = ['wero', 'epi', 'martina weimert'];
-      const relevantNews = currentNewsData.filter(item => {
-        const textContent = `${item.title || ''} ${item.description || ''} ${item.content || ''} ${item.summary || ''}`.toLowerCase();
-        return keywords.some(kw => textContent.includes(kw));
-      });
-
-      const total = relevantNews.length;
-      const readCount = relevantNews.filter(i => isRead(i.link)).length;
+      const total = currentNewsData.length;
+      const readCount = currentNewsData.filter(i => isRead(i.link)).length;
       const favCount = getFavorites().length;
       const percent = Math.round((readCount / total) * 100) || 0;
 
@@ -984,7 +943,7 @@
         savedTheme = localStorage.getItem('theme') || 'dark';
         isCompact = localStorage.getItem('wero_compact') === 'true';
       } catch (e) {}
-      
+
       document.documentElement.setAttribute('data-theme', savedTheme);
       document.getElementById('theme-toggle-switch').checked = (savedTheme === 'dark');
       document.getElementById('compact-toggle-switch').checked = isCompact;
@@ -1014,17 +973,6 @@
         console.error(err);
         container.innerText = 'Fehler beim Laden der Nachrichten.';
       }
-    }
-
-    function refreshFeed() {
-      const btn = document.getElementById('refresh-btn');
-      btn.classList.add('spinning');
-      loadNews().then(() => {
-        setTimeout(() => {
-          btn.classList.remove('spinning');
-          showToast("Feed aktualisiert");
-        }, 400);
-      });
     }
 
     initTheme();
