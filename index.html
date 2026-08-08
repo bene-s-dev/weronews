@@ -431,7 +431,7 @@
       padding: 16px 0;
     }
 
-    .empty-state { text-align: center; padding: 48px 16px; color: var(--text-muted); font-size: 0.9rem; }
+    .empty-state { text-align: center; padding: 48px 16px; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -452,7 +452,6 @@
     </div>
 
     <div class="header-actions">
-      <!-- Hamburger Menu Button -->
       <button class="icon-btn" onclick="toggleMenu()" id="menu-btn" aria-label="Menü öffnen" title="Menü">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu">
           <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
@@ -492,7 +491,6 @@
       </button>
     </div>
     <div class="menu-body">
-      <!-- Dark Mode Switch Row -->
       <div class="setting-row">
         <span class="setting-label">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -504,7 +502,6 @@
         </label>
       </div>
 
-      <!-- Compact View Switch Row -->
       <div class="setting-row">
         <span class="setting-label">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
@@ -516,7 +513,6 @@
         </label>
       </div>
 
-      <!-- Reading Stats Accordion -->
       <div>
         <button class="stats-accordion-btn" id="stats-accordion-btn" onclick="toggleStatsAccordion()">
           <span>
@@ -544,7 +540,6 @@
     </div>
   </div>
 
-  <!-- News Container with Skeleton Loader -->
   <div id="news-container">
     <div class="skeleton-card"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>
     <div class="skeleton-card"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>
@@ -568,7 +563,6 @@
     let isCompact = false;
     let toastTimeout;
 
-    // Domain Extraction up to TLD
     function getDomain(url) {
       if (!url) return 'Quelle';
       try {
@@ -752,14 +746,19 @@
 
     function renderNews() {
       const container = document.getElementById('news-container');
-      if (!currentNewsData || currentNewsData.length === 0) return;
+      if (!currentNewsData) return;
 
-      const keywords = ['wero', 'epi', 'martina weimert'];
+      if (currentNewsData.length === 0) {
+        container.innerHTML = `<div class="empty-state">Keine Nachrichten in der Datenbank vorhanden.<br><br><small>Bitte führe den GitHub-Workflow oder <code>python fetch_news.py</code> aus, um Nachrichten abzurufen.</small></div>`;
+        return;
+      }
+
+      const keywords = ['wero', 'epi', 'weimert'];
 
       let filtered = currentNewsData.filter(item => {
-        // Filter out news that don't contain 'wero', 'epi', or 'martina weimert'
-        const textContent = `${item.title || ''} ${item.description || ''} ${item.content || ''} ${item.summary || ''}`.toLowerCase();
-        const hasKeyword = keywords.some(kw => textContent.includes(kw));
+        // Nur Artikel anzeigen, deren Titel wero, epi oder weimert enthält
+        const titleLower = (item.title || '').toLowerCase();
+        const hasKeyword = keywords.some(kw => titleLower.includes(kw));
         if (!hasKeyword) return false;
 
         const pub = new Date(item.pub_date);
@@ -783,7 +782,7 @@
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state">Keine passenden Nachrichten gefunden.</div>`;
+        container.innerHTML = `<div class="empty-state">Keine Nachrichten mit „wero“, „epi“ oder „weimert“ im Titel gefunden.</div>`;
         return;
       }
 
@@ -797,7 +796,7 @@
         const itemIsRead = isRead(item.link);
         const timeInfo = formatRelativeTime(item.pub_date);
 
-        // Grouping header logic
+        // Datums-Gruppierung
         const pub = new Date(item.pub_date);
         const now = new Date();
         let groupHeader = '';
@@ -971,7 +970,7 @@
         renderNews();
       } catch (err) {
         console.error(err);
-        container.innerText = 'Fehler beim Laden der Nachrichten.';
+        container.innerHTML = `<div class="empty-state">Fehler beim Laden der Nachrichten: ${err.message || err}</div>`;
       }
     }
 
